@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "dev": {
+      "cache": true
+    },
+    "start": {
+      "cache": true
+    },
+    "build": {
+      "cache": true
+    },
+    "astro": {
+      "cache": true
+    }
+  },
+  "defaultBase": "main"
+}
