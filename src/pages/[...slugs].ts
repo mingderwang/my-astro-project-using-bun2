@@ -3,6 +3,7 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 const app = new Elysia()
+  .state("counter", 0)
   .get("/counter", ({ store }) => store.counter++)
   .use(swagger())
   .patch(
@@ -27,3 +28,4 @@ export type App = typeof app;
 const handle = ({ request }: { request: Request }) => app.handle(request);
 
 export const GET = handle;
+export const PATCH = handle;
