@@ -32,7 +32,7 @@ const verifyAuth = async (token?: string) => {
   }
 };
 
-export const onRequest = defineMiddleware(async (context, next) => {
+export const auth = defineMiddleware(async (context, next) => {
   // Ignore auth validation for public routes
 
   const basicAuth = context.request.headers.get("authorization");
