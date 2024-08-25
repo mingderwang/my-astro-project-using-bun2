@@ -1,6 +1,7 @@
 import { errors, jwtVerify } from "jose";
 import { defineMiddleware } from "astro/middleware";
-import { TOKEN, PUBLIC_ROUTES } from "./constant";
+import { TOKEN, PUBLIC_ROUTES } from "../constant";
+import type { APIContext, MiddlewareNext } from "astro";
 
 const secret = new TextEncoder().encode(import.meta.env.JWT_SECRET_KEY);
 
@@ -47,7 +48,8 @@ export const auth = defineMiddleware(async (context, next) => {
       return next();
     }
 
-    const token = authValue; //context.cookies.get(TOKEN)?.value;
+    const token = context.cookies.get(TOKEN)?.value;
+    console.log(token);
     const validationResult = await verifyAuth(token);
 
     console.log(validationResult);
@@ -75,4 +77,15 @@ export const auth = defineMiddleware(async (context, next) => {
         return Response.redirect(new URL("/", context.url));
     }
   }
+  next();
+  /* 
+
+  curl --location 'localhost:4321/api/hello' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: start-time=31' \
+--data '{ "a": 1 }'
+
+{"message":"Hello, World!","receivedData":{"a":1}}
+
+*/
 });
