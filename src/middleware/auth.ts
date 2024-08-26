@@ -5,9 +5,16 @@ import type { APIContext, MiddlewareNext } from "astro";
 
 const secret = new TextEncoder().encode(import.meta.env.JWT_SECRET_KEY);
 
+function encodeToBase64(secret: string) { 
+  const encoder = new TextEncoder(); 
+  const keyBytes = encoder.encode(secret); 
+  return Buffer.from(keyBytes).toString('base64'); 
+}
+
 const verifyAuth = async (token?: string) => {
-  console.log(secret);
-  console.log(token);
+  console.log(encodeToBase64(import.meta.env.JWT_SECRET_KEY)); 
+  console.log(import.meta.env.JWT_SECRET_KEY)
+  console.log('required secrect -> ' + secret);
   if (!token) {
     return {
       status: "unauthorized",
@@ -37,6 +44,7 @@ export const auth = defineMiddleware(async (context, next) => {
   // Ignore auth validation for public routes
 
   const basicAuth = context.request.headers.get("authorization");
+  console.log(basicAuth)
   // Basic YWRtaW46YWRtaW4=
   if (basicAuth) {
     // Get the auth value from string "Basic authValue"
@@ -47,9 +55,10 @@ export const auth = defineMiddleware(async (context, next) => {
     if (PUBLIC_ROUTES.includes(context.url.pathname)) {
       return next();
     }
-
-    const token = context.cookies.get(TOKEN)?.value;
-    console.log(token);
+    // alternative way to get token
+    // const token = context.cookies.get(TOKEN)?.value;
+    const token = authValue;
+    console.log('this token -> ' + token);
     const validationResult = await verifyAuth(token);
 
     console.log(validationResult);
@@ -77,7 +86,10 @@ export const auth = defineMiddleware(async (context, next) => {
         return Response.redirect(new URL("/", context.url));
     }
   }
-  next();
+  
+return new Response(JSON.stringify({ "message": 'unauthorized' }), {
+  status: 401,
+});
   /* 
 
   curl --location 'localhost:4321/api/hello' \

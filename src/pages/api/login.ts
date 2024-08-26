@@ -9,8 +9,8 @@ import { TOKEN } from "../../constant";
 // The token secret. Note the environment variable "JWT_SECRET_KEY
 // @see https://docs.astro.build/en/guides/environment-variables/
 const secret = new TextEncoder().encode(import.meta.env.JWT_SECRET_KEY);
-
 export const POST: APIRoute = async (ctx) => {
+  console.log('secret->' + secret)
   try {
     // Create the token 
     // @see https://github.com/panva/jose
