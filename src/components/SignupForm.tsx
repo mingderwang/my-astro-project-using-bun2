@@ -1,21 +1,19 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { signUp } from "../lib/auth";
+import { registerUser } from "../lib/registration";
 export default function Form() {
   const [responseMessage, setResponseMessage] = useState("🍔");
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
-    const name = formData.get("name") as string;
-    const message = await signUp(name);
-    const response = await fetch("/api/signup", {
-      method: "POST",
-      body: message,
-    });
-    const data = await response.json();
-    console.log('received data: ')
-    console.log(data)
+    const username = formData.get("name") as string;
+    let data;
+    try {
+      registerUser()
+    } catch {
+
+    }
     if (data!.receivedData!.credential!.id) {
       setResponseMessage(data.receivedData.credential.id);
     }

@@ -1,0 +1,81 @@
+---
+---
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebAuthn Registration</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+  <h1>WebAuthn Registration</h1>
+  <button id="register-button">Register</button>
+  <p id="status"></p>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Component-specific library loaded!');
+    });
+  </script>
+  <script>
+    // Function to handle the registration process
+    async function handleRegistration() {
+      try {
+        // Fetch registration options from your server
+        const response = await fetch('/get-registration-options');
+        if (!response.ok) {
+          throw new Error('Failed to fetch registration options');
+        }
+        const options = await response.json();
+
+        // Start the WebAuthn registration process
+        const credential = await navigator.credentials.create({ publicKey: options });
+
+        // Send the registration result to your server
+        const resultResponse = await fetch('/complete-registration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: credential.id,
+            rawId: bufferToBase64(credential.rawId),
+            type: credential.type,
+            response: {
+              attestationObject: bufferToBase64(credential.response.attestationObject),
+              clientDataJSON: bufferToBase64(credential.response.clientDataJSON),
+            },
+          }),
+        });
+
+        if (!resultResponse.ok) {
+          throw new Error('Failed to complete registration');
+        }
+        document.getElementById('status').textContent = 'Registration successful!';
+      } catch (error) {
+        console.error('Error during registration:', error);
+        document.getElementById('status').textContent = 'Registration failed.';
+      }
+    }
+
+    // Helper function to convert ArrayBuffer to Base64
+    function bufferToBase64(buffer) {
+      const uint8Array = new Uint8Array(buffer);
+      let binary = '';
+      const len = uint8Array.byteLength;
+      for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(uint8Array[i]);
+      }
+      return window.btoa(binary);
+    }
+
+    // Attach the click event listener to the register button
+    document.getElementById('register-button').addEventListener('click', handleRegistration);
+  </script>

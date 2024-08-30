@@ -1,0 +1,25 @@
+---
+
+---
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<script src="https://unpkg.com/@simplewebauthn/browser/dist/bundle/index.es5.umd.min.js"></script>
+
+ <h1>WebAuthn Registration</h1>
+  <button id="register-button">Register</button>
+  <p id="status"></p>
+
+<script>
+    function triggerConfetti() {
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+  });
+}
+
+const { startAuthentication } = SimpleWebAuthnBrowser;
+
+    // Attach the click event listener to the register button
+    document.getElementById('register-button').addEventListener('click', triggerConfetti);
+  </script>

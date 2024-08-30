@@ -2,13 +2,13 @@
 // pages/[...slugs].ts
 import { Elysia } from "elysia";
 import { swagger } from "@elysiajs/swagger";
-import { userProfile } from "../plugins/userProfile";
-import { counter } from "../plugins/counter";
+import { registerOptions } from "../plugins/registerOptions";
+import { authenticateOptions } from "../plugins/authenticateOptions";
 
 const app = new Elysia()
   .use(swagger())
-  .use(userProfile)
-  .use(counter)
+  .use(registerOptions)
+  .use(authenticateOptions)
 
 export type App = typeof app;
 

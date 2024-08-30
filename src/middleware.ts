@@ -5,6 +5,6 @@ export const onRequest = defineMiddleware((context, next) => {
   if (PUBLIC_ROUTES.includes(context.url.pathname)) {
     return next();
   }
-  console.log(context);
+  //console.log(context);
   next();
 });
