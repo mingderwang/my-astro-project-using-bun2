@@ -11,11 +11,11 @@ export async function registerUser() {
     challenge: new Uint8Array([/* challenge bytes from the server */]),
     rp: {
       name: "Example Corporation", // The name of your organization or service
-      id: "example.com"           // The domain of your website
+      id: "localhost"           // The domain of your website
     },
     user: {
       id: new Uint8Array([/* user ID bytes */]), // Unique user ID
-      name: "user@example.com", // User's email or username
+      name: "user@localhost", // User's email or username
       displayName: "John Doe"   // User's display name
     },
     pubKeyCredParams: [

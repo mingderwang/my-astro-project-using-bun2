@@ -5,20 +5,31 @@ import { Fido2Lib } from "fido2-lib";
 // which just makes the options calls easier later on:
 const f2l = new Fido2Lib({
   timeout: 42,
-  rpId: "example.com",
+  rpId: "localhost",
   rpName: "ACME",
-  rpIcon: "https://example.com/logo.png",
+  rpIcon: "https://localhost/logo.png",
   challengeSize: 128,
   attestation: "none",
   cryptoParams: [-7, -257],
   authenticatorAttachment: "platform",
   authenticatorRequireResidentKey: false,
-  authenticatorUserVerification: "required",
+  authenticatorUserVerification: "preferred",
 });
 export const authenticateOptions = new Elysia().get(
   "/authenticate/options",
   async ({ body, error }) => {
-    const registrationOptions = await f2l.assertionOptions()
+    const challenge = await f2l.assertionOptions();
+    const registrationOptions = {
+      ...challenge,
+      challenge: Buffer.from(challenge.challenge).toString("base64"),
+      allowCredentials: [
+        {
+          id: Buffer.from("credentialId").toString("base64"),
+          type: "public-key",
+          transports: ["hybrid", "internal", "usb", "nfc", "ble"],
+        },
+      ],
+    };
     console.log(registrationOptions);
     return registrationOptions;
   }
